@@ -1,22 +1,78 @@
 .container {
   max-width: 1000px;
-  padding: 24px 16px;
   margin: 0 auto;
 }
 
 .tasks {
-  width: 300px;
-  padding: 0;
-  margin: 20px auto 0;
+  width: 600px;
+  margin: 0 auto;
   text-align: left;
   list-style-type: none;
+  border-right: 1px solid #eee;
+  border-left: 1px solid #eee;
 }
 
-.tasks > li {
-  margin-top: 10px;
+.createTask {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 16px;
   border-bottom: 1px solid #eee;
 }
 
-.deleteBtn {
+.createTaskInput {
+  width: 400px;
+  padding: 2px;
+  border: none;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px;
+}
+
+.authorDetails {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.authorIcon {
+  border-radius: 50%;
+}
+
+.authorName {
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+}
+
+.taskTime {
+  font-size: 16px;
+  color: #777;
+}
+
+.label {
+  gap: 8px;
+  padding: 8px 16px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.labelInput {
+  width: 400px;
+  padding: 2px;
+}
+
+.postBtn {
+  display: flex;
+  align-self: flex-end;
+  padding: 2px;
+}
+
+.btn {
   float: right;
+  padding: 2px;
 }
