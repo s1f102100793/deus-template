@@ -94,6 +94,13 @@ const Home = () => {
     );
   };
 
+  const renderTaskImage = (task: TaskModel) => {
+    if (!task.image) return null;
+    return task.image?.url ? (
+      <img src={task.image.url} alt={task.label} className={styles.taskImage} />
+    ) : null;
+  };
+
   if (!tasks) return <Loading visible />;
 
   return (
@@ -142,19 +149,28 @@ const Home = () => {
               <li className={styles.label} key={task.id}>
                 {user && user.id === task.author.userId ? (
                   <label>
-                    <input type="checkbox" checked={task.done} onChange={() => toggleDone(task)} />
-                    {renderEditField(task)}
-                    <input
-                      type="button"
-                      value="DELETE"
-                      className={styles.btn}
-                      onClick={() => deleteTask(task)}
-                    />
-                    {renderEditButtons(task)}
+                    <div className={styles.editGroup}>
+                      <input
+                        type="checkbox"
+                        checked={task.done}
+                        onChange={() => toggleDone(task)}
+                      />
+                      {renderEditField(task)}
+                    </div>
+                    <div className={styles.btnGroup}>
+                      <input
+                        type="button"
+                        value="DELETE"
+                        className={styles.btn}
+                        onClick={() => deleteTask(task)}
+                      />
+                      {renderEditButtons(task)}
+                    </div>
                   </label>
                 ) : (
                   <span>{task.label}</span>
                 )}
+                {renderTaskImage(task)}
               </li>
             </>
           ))}
