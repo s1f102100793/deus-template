@@ -30,9 +30,13 @@ export const taskModel = {
 
     return deletableTaskIdParser.parse(task.id);
   },
-  updateDoneOrThrow: (user: UserModel, task: TaskModel, done: boolean): TaskModel => {
-    if (user.id !== task.author.userId) throw new Error('cannot update done');
+  updateOrThrow: (
+    user: UserModel,
+    task: TaskModel,
+    updateData: { done: boolean; label: string }
+  ): TaskModel => {
+    if (user.id !== task.author.userId) throw new Error('cannot update task');
 
-    return { ...task, done };
+    return { ...task, ...updateData };
   },
 };

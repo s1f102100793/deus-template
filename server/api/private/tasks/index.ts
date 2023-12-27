@@ -16,6 +16,7 @@ export type Methods = DefineMethods<{
     reqBody: {
       taskId: Maybe<TaskId>;
       done: boolean;
+      label: string;
     };
     status: 204;
     resBody: TaskModel;

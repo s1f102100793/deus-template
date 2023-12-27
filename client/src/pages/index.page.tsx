@@ -44,7 +44,7 @@ const Home = () => {
   };
   const toggleDone = async (task: TaskModel) => {
     await apiClient.private.tasks
-      .patch({ body: { taskId: task.id, done: !task.done } })
+      .patch({ body: { taskId: task.id, done: !task.done, label: task.label } })
       .catch(returnNull);
     await fetchTasks();
   };
@@ -56,9 +56,11 @@ const Home = () => {
     setEditingTaskId(task.id);
     setEditingLabel(task.label);
   };
-  const saveEditTask = async () => {
+  const saveEditTask = async (task: TaskModel) => {
     if (editingTaskId !== null) {
-      await apiClient.private.tasks.post({ body: { label: editingLabel } }).catch(returnNull);
+      await apiClient.private.tasks
+        .patch({ body: { taskId: task.id, done: task.done, label: editingLabel } })
+        .catch(returnNull);
       setEditingTaskId(null);
       setEditingLabel('');
       await fetchTasks();
@@ -83,7 +85,7 @@ const Home = () => {
   };
   const renderEditButtons = (task: TaskModel) => {
     return editingTaskId === task.id ? (
-      <input type="button" value="SAVE" className={styles.btn} onClick={() => saveEditTask()} />
+      <input type="button" value="SAVE" className={styles.btn} onClick={() => saveEditTask(task)} />
     ) : (
       <input
         type="button"
@@ -93,7 +95,6 @@ const Home = () => {
       />
     );
   };
-
   const renderTaskImage = (task: TaskModel) => {
     if (!task.image) return null;
     return task.image?.url ? (
