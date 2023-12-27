@@ -20,12 +20,16 @@ const Home = () => {
   const [image, setImage] = useState<File>();
   const [editingTaskId, setEditingTaskId] = useState<TaskId | null>(null);
   const [editingLabel, setEditingLabel] = useState<string>('');
+  const previewImageUrl = image ? URL.createObjectURL(image) : null;
 
   const inputLabel = (e: ChangeEvent<HTMLInputElement>) => {
     setLabel(e.target.value);
   };
   const inputFile = (e: ChangeEvent<HTMLInputElement>) => {
     setImage(e.target.files?.[0]);
+  };
+  const editLabel = (e: ChangeEvent<HTMLInputElement>) => {
+    setEditingLabel(e.target.value);
   };
   const fetchTasks = async () => {
     const tasks = await apiClient.public.tasks.$get().catch(returnNull);
@@ -57,14 +61,12 @@ const Home = () => {
     setEditingLabel(task.label);
   };
   const saveEditTask = async (task: TaskModel) => {
-    if (editingTaskId !== null) {
-      await apiClient.private.tasks
-        .patch({ body: { taskId: task.id, done: task.done, label: editingLabel } })
-        .catch(returnNull);
-      setEditingTaskId(null);
-      setEditingLabel('');
-      await fetchTasks();
-    }
+    await apiClient.private.tasks
+      .patch({ body: { taskId: task.id, done: task.done, label: editingLabel } })
+      .catch(returnNull);
+    setEditingTaskId(null);
+    setEditingLabel('');
+    await fetchTasks();
   };
 
   useEffect(() => {
@@ -73,12 +75,7 @@ const Home = () => {
 
   const renderEditField = (task: TaskModel) => {
     return editingTaskId === task.id ? (
-      <input
-        type="text"
-        value={editingLabel}
-        className={styles.labelInput}
-        onChange={(e) => setEditingLabel(e.target.value)}
-      />
+      <input type="text" value={editingLabel} className={styles.labelInput} onChange={editLabel} />
     ) : (
       <span>{task.label}</span>
     );
@@ -109,36 +106,39 @@ const Home = () => {
       <BasicHeader user={user} />
       <div className={styles.container}>
         <ul className={styles.tasks}>
-          <li className={styles.createTask}>
-            <input
-              type="text"
-              placeholder="What is happening?!"
-              value={label}
-              onChange={inputLabel}
-              className={styles.createTaskInput}
-            />
-            <div>
+          {user && (
+            <li className={styles.createTask}>
+              <input
+                type="text"
+                placeholder="What is happening?!"
+                value={label}
+                onChange={inputLabel}
+                className={styles.createTaskInput}
+              />
+              {previewImageUrl !== null && (
+                <img src={previewImageUrl} className={styles.taskImage} />
+              )}
               <input
                 type="file"
                 ref={fileRef}
                 accept=".png,.jpg,.jpeg,.gif,.webp,.svg"
                 onChange={inputFile}
               />
-            </div>
-            <button onClick={createTask} className={styles.postBtn}>
-              POST
-            </button>
-          </li>
+              <button onClick={createTask} className={styles.postBtn}>
+                POST
+              </button>
+            </li>
+          )}
           {tasks.map((task) => (
             <>
               <li className={styles.taskHeader}>
                 <div className={styles.authorDetails}>
-                  {user && user.photoURL !== undefined ? (
+                  {task.author.photoURL !== undefined ? (
                     <img
                       className={styles.authorIcon}
-                      src={user.photoURL}
+                      src={task.author.photoURL}
                       height={24}
-                      alt={user.displayName}
+                      alt={task.author.name}
                     />
                   ) : (
                     <HumanIcon size={24} fill="#555" />

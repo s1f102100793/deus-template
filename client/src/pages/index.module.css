@@ -23,7 +23,7 @@
 
 .createTaskInput {
   width: 400px;
-  padding: 2px;
+  padding: 4px;
   border: none;
 }
 
@@ -103,6 +103,7 @@
     border: none;
   }
 
+  .labelInput,
   .createTaskInput {
     width: 100%;
   }
